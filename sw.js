@@ -1,0 +1,4 @@
+var V="termo-diel-v3",A=["./","index.html","manifest.webmanifest"];
+self.addEventListener("install",function(e){e.waitUntil(caches.open(V).then(function(c){return c.addAll(A)}).then(function(){return self.skipWaiting()}))});
+self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.filter(function(n){return n!==V}).map(function(n){return caches.delete(n)}))}).then(function(){return self.clients.claim()}))});
+self.addEventListener("fetch",function(e){if(e.request.method!=="GET")return;e.respondWith(caches.match(e.request,{ignoreSearch:true}).then(function(r){var n=fetch(e.request).then(function(x){if(x&&x.ok){var c=x.clone();caches.open(V).then(function(ca){ca.put(e.request,c)})}return x}).catch(function(){return r||caches.match("index.html")});return r||n}))});
